@@ -12,13 +12,13 @@ final class APICaller {
     
     struct Constants {
         static let topHeadlinesURL = URL(string: "https://www.newsapi.ai/api/v1/article/getArticles?query=%7B%22%24query%22%3A%7B%22%24and%22%3A%5B%7B%22locationUri%22%3A%22http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FKhartoum%22%7D%2C%7B%22lang%22%3A%22eng%22%7D%5D%7D%2C%22%24filter%22%3A%7B%22forceMaxDataTimeWindow%22%3A%2231%22%7D%7D&resultType=articles&articlesSortBy=date&articlesCount=100&articleBodyLen=256&apiKey=1067c479-7a25-490d-b19c-e7118091068a")
+        static let forecast = URL(string: "https://api.weatherapi.com/v1/forecast.json?key=18c47f10f913491cb29213100230701&q=Khartoum&days=1&aqi=no&alerts=no")
     }
     
     
     private init() {}
     
     public func getTopStories(completion: @escaping (Result<[Article], Error>) -> Void) {
-        print("fgfhfhhfnfhfhj")
         guard let url = Constants.topHeadlinesURL else {
             return
         }
@@ -40,9 +40,55 @@ final class APICaller {
         }
         task.resume()
     }
+    
+    public func getForecast(completion: @escaping (Result<[ForecastItem], Error>) -> Void) {
+        guard let url = Constants.forecast else {
+            return
+        }
+        let task = URLSession.shared.dataTask(with: url) {data, _, error in
+            if let error = error {
+                completion(.failure(error))
+            }
+            else if let data = data {
+                do {
+                    let result = try JSONDecoder().decode(ForecastResponse.self, from: data)
+                    print("Articles: \(result.forecast.forecastday.count)")
+                    completion(.success(result.forecast.forecastday))
+                }
+                catch {
+                    print("something went wrong")
+                    completion(.failure(error))
+                }
+            }
+        }
+        task.resume()
+    }
 }
 
-struct APIResponse:Codable {
+struct ForecastResponse: Codable {
+    let current: CurrentTemp
+    let forecast: ForecastDay
+}
+
+struct CurrentTemp: Codable {
+    let temp_c: Float
+}
+
+struct ForecastDay: Codable {
+    let forecastday: [ForecastItem]
+}
+
+struct ForecastItem: Codable {
+    let day: ForecastDayObject
+}
+
+struct ForecastDayObject: Codable {
+    let maxtemp_c: Float
+    let mintemp_c: Float
+    let avgtemp_c: Float
+}
+
+struct APIResponse: Codable {
     let articles: AResult
 }
 

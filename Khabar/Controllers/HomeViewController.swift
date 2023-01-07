@@ -17,10 +17,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }()
     
     private var articles = [Article]()
+    private var forecastItem = [ForecastItem]()
     private var viewModels = [NewsTableViewCellViewModel]()
+    private var forecastViewModels = [ForecastViewModel]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "News"
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
         tableView.delegate = self
@@ -35,7 +38,30 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     NewsTableViewCellViewModel(
                         title: $0.title ?? "",
                         subtitle: $0.body ?? "No description",
-                        imageURL: URL(string: $0.image ?? "")
+                        imageURL: URL(string: $0.image ?? ""),
+                        date: $0.date ?? "",
+                        source: $0.source?.title ?? ""
+                    )
+                    
+                })
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
+        APICaller.shared.getForecast { [weak self] result in
+            switch result {
+            case .success(let forecastItem):
+                self?.forecastItem = forecastItem
+                print("well \(forecastItem[0].day.maxtemp_c)")
+                self?.forecastViewModels = forecastItem.compactMap({
+                    ForecastViewModel(
+                        maxtemp_c: $0.day.maxtemp_c,
+                        mintemp_c: $0.day.mintemp_c,
+                        avgtemp_c: $0.day.avgtemp_c
                     )
                     
                 })
@@ -86,5 +112,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 300
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Avg Temp: \(forecastItem.count>0 ? forecastItem[0].day.avgtemp_c : 0.0)° Max: \(forecastItem.count>0 ? forecastItem[0].day.maxtemp_c : 0.0)° Min: \(forecastItem.count>0 ? forecastItem[0].day.mintemp_c : 0.0)°"
     }
 }
