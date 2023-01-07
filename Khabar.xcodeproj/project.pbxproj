@@ -16,6 +16,7 @@
 		0AF4D0312969382A002ABF47 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF4D0302969382A002ABF47 /* SearchViewController.swift */; };
 		0AF4D0332969383B002ABF47 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF4D0322969383B002ABF47 /* AboutViewController.swift */; };
 		0AF4D03529696983002ABF47 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF4D03429696982002ABF47 /* APICaller.swift */; };
+		0AF4D037296986B1002ABF47 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AF4D036296986B1002ABF47 /* NewsTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		0AF4D0302969382A002ABF47 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		0AF4D0322969383B002ABF47 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		0AF4D03429696982002ABF47 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
+		0AF4D036296986B1002ABF47 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				0AF4D0242969352A002ABF47 /* LaunchScreen.storyboard */,
 				0AF4D0272969352A002ABF47 /* Info.plist */,
 				0AF4D03429696982002ABF47 /* APICaller.swift */,
+				0AF4D036296986B1002ABF47 /* NewsTableViewCell.swift */,
 			);
 			path = Khabar;
 			sourceTree = "<group>";
@@ -156,6 +159,7 @@
 			files = (
 				0AF4D0332969383B002ABF47 /* AboutViewController.swift in Sources */,
 				0AF4D0312969382A002ABF47 /* SearchViewController.swift in Sources */,
+				0AF4D037296986B1002ABF47 /* NewsTableViewCell.swift in Sources */,
 				0AF4D01E29693529002ABF47 /* MainTabBarViewController.swift in Sources */,
 				0AF4D03529696983002ABF47 /* APICaller.swift in Sources */,
 				0AF4D01A29693529002ABF47 /* AppDelegate.swift in Sources */,
