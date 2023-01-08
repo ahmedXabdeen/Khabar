@@ -8,7 +8,7 @@
 import UIKit
 import SafariServices
 
-class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     private let tableView: UITableView = {
         let table = UITableView()
         table.register(NewsTableViewCell.self, forCellReuseIdentifier: NewsTableViewCell.identifier)
@@ -16,6 +16,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
     }()
     
+    private let searchVC = UISearchController(searchResultsController: nil)
     private var articles = [Article]()
     private var forecastItem = [ForecastItem]()
     private var viewModels = [NewsTableViewCellViewModel]()
@@ -72,6 +73,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 print(error)
             }
         }
+        createSearchBar()
     }
     
 
@@ -88,6 +90,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
     }
+    private func createSearchBar() {
+        navigationItem.searchController = searchVC
+        searchVC.searchBar.delegate = self
+        
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModels.count
     }
@@ -115,6 +123,34 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Avg Temp: \(forecastItem.count>0 ? forecastItem[0].day.avgtemp_c : 0.0)° Max: \(forecastItem.count>0 ? forecastItem[0].day.maxtemp_c : 0.0)° Min: \(forecastItem.count>0 ? forecastItem[0].day.mintemp_c : 0.0)°"
+        return "Temp in Khartoum: \(forecastItem.count>0 ? forecastItem[0].day.avgtemp_c : 0.0)° Max: \(forecastItem.count>0 ? forecastItem[0].day.maxtemp_c : 0.0)° Min: \(forecastItem.count>0 ? forecastItem[0].day.mintemp_c : 0.0)°"
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text, !text.isEmpty else {
+            return
+        }
+        APICaller.shared.search(with: text) { [weak self] result in
+            switch result {
+            case .success(let articles):
+                self?.articles = articles
+                self?.viewModels = articles.compactMap({
+                    NewsTableViewCellViewModel(
+                        title: $0.title ?? "",
+                        subtitle: $0.body ?? "No description",
+                        imageURL: URL(string: $0.image ?? ""),
+                        date: $0.date ?? "",
+                        source: $0.source?.title ?? ""
+                    )
+                    
+                })
+                DispatchQueue.main.async {
+                    self?.tableView.reloadData()
+//                    self?.searchVC.dismiss(animated: true)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }
